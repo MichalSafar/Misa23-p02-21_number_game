@@ -9,7 +9,7 @@ class TwentyOneGame():
       if int(number) > 4:
         internal_number = 4
       else:
-        internal_number = number
+        internal_number = int(number)
     else:
       print("Game accepts only integers or floats!")
       return -1
@@ -18,7 +18,7 @@ class TwentyOneGame():
       try:
         self.game_list.append(self.game_list[-1] + 1)
       except:
-        self.game_list.extend([1.2])
+        self.game_list.extend([1])
       o += 1
     return 1
     
@@ -31,51 +31,80 @@ class TwentyOneGame():
         return False
       else:
         i += 1
+    print(f"The numbers are: {self.game_list}")
     return True
   
   def computers_game_pass(self):
-    comp_number = random.randint(1, 4)
-    self.add_numbers_up_to_four(comp_number)
+    if len(self.game_list) == 0 or self.game_list[-1] <= 16:
+      comp_number = random.randint(1, 4)
+      self.add_numbers_up_to_four(comp_number)
+    elif self.game_list[-1] >= 17:
+      try:
+        rest_of_numbers = 21 - self.game_list[-1]
+        comp_number = rest_of_numbers#random.randint(1, rest_of_numbers)
+        self.add_numbers_up_to_four(comp_number)
+      except:
+        comp_number = 0
     print(f"Computer wants to add {comp_number} numbers.")
     return comp_number
   
   def player_game_pass(self):
-    player_numbers = input("How many numbers would you like to add (up to 4)?")
-    self.add_numbers_up_to_four(player_numbers)
+    player_numbers_raw = input("How many numbers would you like to add (up to 4)?")
+    player_numbers = int(player_numbers_raw)
     print(f"You asked to add {player_numbers} numbers.")
-    print(f"The numbers are: {self.game_list}")
+    add_player_numbers = self.add_numbers_up_to_four(player_numbers)
+    add_player_numbers
+    if add_player_numbers == -1:
+      exit()
+    else:
+      pass
     return player_numbers
+  
+  def winning_number(self):
+    if self.game_list[-1] >= 21:
+      print("You won the game!")
+      exit()
+    
+  def loosing_number(self):
+    if self.game_list[-1] >= 21:
+      print("We are sorry, you lost the game. We wish you good luck and strategy next time.")
+      exit()
+
 
   def game(self):
     player_first_or_second = input("Would you like to play first (F) or second (S)?")
-    player_first_or_second.lower()
+    player_first_or_second = player_first_or_second.lower()
     if player_first_or_second == "f" or player_first_or_second == "first":
       player_would_like_to_be = "first"
     elif player_first_or_second == "s" or player_first_or_second == "second":
       player_would_like_to_be = "second"
+    else:
+      guess_enter = random.randint(0,1)
+      if guess_enter == 0:
+        player_would_like_to_be = "first"
+        print("I do not understand your answer, but I guess you want to enter the game as a first player.")
+      else:
+        player_would_like_to_be = "second"
+        print("I do not understand your answer, but I guess you want to enter the game as a second player.")
     print(f"You entered the game as a {player_would_like_to_be} player.")
-    my_game = self.game_list
-    while my_game[-1] <= 21:
-      if my_game[-1] == 21:
-        print("We are sorry, you lost the game. We wish you good luck and strategy next time.")
-        break
-      elif my_game[-1] == 20:
-        print("You won the game!")
-        break
+    r = 1
+    while r <= 21:
       if player_would_like_to_be == "first":
-        player_numbers = self.player_game_pass()
-        player_numbers
-        if len(my_game) < 2 and player_numbers == 1:
-          my_game.append(1)
-        elif len(my_game) < 2 and player_numbers == 2:
-          my_game.extend([1, 2])
-        else:
-          self.add_numbers_up_to_four(player_numbers)
-        print(f"The numbers are: {my_game}")
-      elif player_first_or_second == "second":
-        computer_pass = self.computers_game_pass()
-        print(f"The numbers are: {my_game}")
         self.player_game_pass()
-
+        print(f"The numbers are: {self.game_list}")
+        self.winning_number()
+        self.computers_game_pass()
+        print(f"The numbers are: {self.game_list}")
+        self.loosing_number()
+        r = self.game_list[-1]
+      elif player_would_like_to_be == "second":
+        self.computers_game_pass()
+        print(f"The numbers are: {self.game_list}")
+        self.loosing_number()
+        self.player_game_pass()
+        print(f"The numbers are: {self.game_list}")
+        self.winning_number()
+        r = self.game_list[-1]
     
-  
+my_game = TwentyOneGame()
+my_game.game()  
