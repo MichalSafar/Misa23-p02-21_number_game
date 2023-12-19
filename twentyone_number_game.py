@@ -1,8 +1,10 @@
 import random
 
 class TwentyOneGame():
-  def __init__(self):
+  def __init__(self, player, another_player):
     self.game_list = []
+    self.player = player
+    self.another_player = another_player
 
   def add_numbers_up_to_four(self, number):
     if type(number) == int or type(number) == float:
@@ -48,10 +50,13 @@ class TwentyOneGame():
     print(f"Computer wants to add {comp_number} numbers.")
     return comp_number
   
-  def player_game_pass(self):
-    player_numbers_raw = input("How many numbers would you like to add (up to 4)?")
+  def player_game_pass(self, computer_or_another_player, player):
+    if computer_or_another_player == "computer":
+      player_numbers_raw = input("How many numbers would you like to add (up to 4)?")
+    else:
+      player_numbers_raw = input(f"{player}. How many numbers would you like to add (up to 4)?")
     player_numbers = int(player_numbers_raw)
-    print(f"You asked to add {player_numbers} numbers.")
+    print(f"{player} asked to add {player_numbers} numbers.")
     add_player_numbers = self.add_numbers_up_to_four(player_numbers)
     add_player_numbers
     if add_player_numbers == -1:
@@ -60,9 +65,12 @@ class TwentyOneGame():
       pass
     return player_numbers
   
-  def winning_number(self):
-    if self.game_list[-1] >= 21:
+  def winning_number(self, player):
+    if self.game_list[-1] >= 21 and player == "player":
       print("You won the game!")
+      exit()
+    elif self.game_list[-1] >= 21:
+      print(f"{player} won the game!")
       exit()
     
   def loosing_number(self):
@@ -70,6 +78,51 @@ class TwentyOneGame():
       print("We are sorry, you lost the game. We wish you good luck and strategy next time.")
       exit()
 
+  def computer_player_game(self, player_would_like_to_be, computer_or_another_player, player):
+    r = 1
+    round = 1
+    while r <= 21:
+      print(f"Round {round}")
+      if player_would_like_to_be == "first":
+        self.player_game_pass(computer_or_another_player, player = self.player)
+        print(f"The numbers are: {self.game_list}")
+        self.winning_number(self.player)
+        self.computers_game_pass()
+        print(f"The numbers are: {self.game_list}")
+        self.loosing_number()
+        r = self.game_list[-1]
+      elif player_would_like_to_be == "second":
+        self.computers_game_pass()
+        print(f"The numbers are: {self.game_list}")
+        self.loosing_number()
+        self.player_game_pass(computer_or_another_player, player = self.player)
+        print(f"The numbers are: {self.game_list}")
+        self.winning_number(self.player)
+        r = self.game_list[-1]
+      round += 1
+    
+  def two_players_game(self, player_would_like_to_be, computer_or_another_player, player1, player2):
+    r = 1
+    round = 1
+    while r <= 21:
+      print(f"Round {round}")
+      if player_would_like_to_be == "first":
+        self.player_game_pass(computer_or_another_player, self.player)
+        print(f"The numbers are: {self.game_list}")
+        self.winning_number(self.player)
+        self.player_game_pass(computer_or_another_player, self.another_player)
+        print(f"The numbers are: {self.game_list}")
+        self.winning_number(self.another_player)
+        r = self.game_list[-1]
+      elif player_would_like_to_be == "second":
+        self.player_game_pass(computer_or_another_player, self.player)
+        print(f"The numbers are: {self.game_list}")
+        self.winning_number(self.player)
+        self.player_game_pass(computer_or_another_player, self.another_player)
+        print(f"The numbers are: {self.game_list}")
+        self.winning_number(self.another_player)
+        r = self.game_list[-1]
+      round += 1
 
   def game(self):
     print("Hello. You are welcomed in our game. At the beginning we will ask some absolutelly necessary questions.")
@@ -99,33 +152,12 @@ class TwentyOneGame():
         player_would_like_to_be = "second"
         print("I do not understand your answer, but I guess you want to enter the game as a second player.")
     print(f"You entered the game as a {player_would_like_to_be} player.")
-    r = 1
-    round = 1
-    while r <= 21:
-      print(f"Round {round}")
-      if player_would_like_to_be == "first":
-        self.player_game_pass()
-        print(f"The numbers are: {self.game_list}")
-        self.winning_number()
-        if computer_or_another_player == "computer":
-          self.computers_game_pass()
-        elif computer_or_another_player == "player":
-          self.player_game_pass()
-        print(f"The numbers are: {self.game_list}")
-        self.loosing_number()
-        r = self.game_list[-1]
-      elif player_would_like_to_be == "second":
-        if computer_or_another_player == "computer":
-          self.computers_game_pass()
-        elif computer_or_another_player == "player":
-          self.player_game_pass()
-        print(f"The numbers are: {self.game_list}")
-        self.loosing_number()
-        self.player_game_pass()
-        print(f"The numbers are: {self.game_list}")
-        self.winning_number()
-        r = self.game_list[-1]
-      round += 1
+    if computer_or_another_player == "computer":
+      self.computer_player_game(player_would_like_to_be, computer_or_another_player, self.player)
+    else:
+      self.player = input("What will be the name of player1?  ")
+      self.another_player = input("what will be the name of player2?  ") 
+      self.two_players_game(player_would_like_to_be, computer_or_another_player, self.player, self.another_player)
     
-my_game = TwentyOneGame()
+my_game = TwentyOneGame("player1", "player2")
 my_game.game()  
