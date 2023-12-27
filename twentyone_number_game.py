@@ -23,18 +23,20 @@ class TwentyOneGame():
         self.game_list.extend([1])
       o += 1
     return 1
-    
-  def consecutive_numbers(self, consec_num):
-    i = 1
-    if len(self.game_list) < 2:
-      return "Not enough numbers."
-    while i <= consec_num:
-      if self.game_list[-1] - self.game_list[-2] != 1:
-        return False
-      else:
-        i += 1
-    print(f"The numbers are: {self.game_list}")
-    return True
+
+  def computers_game_pass(self):
+    if len(self.game_list) == 0 or self.game_list[-1] <= 16:
+      comp_number = random.randint(1, 4)
+      self.add_numbers_up_to_four(comp_number)
+    elif self.game_list[-1] >= 17:
+      try:
+        rest_of_numbers = 21 - self.game_list[-1]
+        comp_number = rest_of_numbers#random.randint(1, rest_of_numbers)
+        self.add_numbers_up_to_four(comp_number)
+      except:
+        comp_number = 0
+    print(f"Computer wants to add {comp_number} numbers.")
+    return comp_number
   
   def player_game_pass(self, computer_or_another_player, player):
     if computer_or_another_player == "computer":
